@@ -13,8 +13,9 @@ body{
 }
 
 .numpad{
-    display:table-cell;
-    width: 100%;
+    display: flex;
+    flex-direction: column;
+    width: 300px;
     height: 300px;
 }
 
@@ -26,11 +27,17 @@ body{
 .calcBody{
     height:100%;
     width:100%;
+    margin: 0px;
 }
 
 .buttonRow{
+    flex-grow: 1;
     display: flex;
-    justify-content: space-between;
+}
+
+.title{
+    font-size: 100px;
+    font-family: 'digital-clock-font';
 }
 
 .calcButton{
@@ -44,6 +51,8 @@ color:#FFFFFF;
 background-color:#4eb5f1;
 text-align:center;
 transition: all 0.2s;
+flex-grow: 1;
+
 }
 
 .calcButton:hover{
@@ -57,11 +66,23 @@ background-color:#4095c6;
     }
 }
 
+@font-face{
+    font-family:'digital-clock-font';
+    src: url('./digital-7.regular.ttf');
+}
+
 .screen{
+    display: flex;
+    /* align-items:center; */
+    width: auto;
+    height: 45px;
+    justify-content: right;
+    padding: 2px;
     border: 2px solid black;
 }
-.screenText{
-    font-size: 32px;
-    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+
+#screenText{
+    font-size: 50px;
     font-weight: bold;
+    font-family: 'digital-clock-font';
 }

@@ -65,7 +65,6 @@ function addToQueue(input){
         }
         updateScreen();
     }
-
 }
 
 function updateScreen(){
@@ -118,15 +117,12 @@ function calculate(int,string,int2){
 
 function calculateAll(array){
     x = array.length;
-
     for(i=0;i<x;i++){
         if(array.length<=3){
             result=calculate(parseInt(array[0]),array[1],parseInt(array[2]));
             return;
         }
-        console.log(i);
         if(i%2==1){
-            console.log('reached');
             result=calculate(parseInt(array[0]),array[1],parseInt(array[2]));
             array.shift();
             array.shift();
