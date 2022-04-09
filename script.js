@@ -13,14 +13,15 @@ const buttonDivide = document.getElementById("/");
 const buttonAC = document.getElementById("AC");
 const buttonMult = document.getElementById("*");
 const buttonPlus = document.getElementById("+");
+const buttonDot = document.getElementById(".");
 const screen = document.getElementById("screen");
 const screenText = document.getElementById("screenText");
-
 const buttons = document.querySelectorAll('.calcButton');
+
 let queue = [];
 let temp = '';
 let resultBuilder = []
-let cleaned = [];
+let cleaned = new Array;
 let result = 0;
 let current=0;
 
@@ -33,8 +34,14 @@ buttonAC.onclick = ()=> {
     screenText.textContent='0';
 }
 
+function clearLastInput(){
+
+}
+
 function clear(){
+    temp = queue[0];
     queue = [];
+    //queue.push(temp);
     temp = '';
     resultBuilder = [];
     result = 0;
@@ -43,14 +50,27 @@ function clear(){
 }
 
 function addToQueue(input){
-    x = parseInt(screenText.textContent);
+    x = parseFloat(screenText.textContent);
     if(split(input)&&queue.length==0){
         queue.push(x);
         queue.push(input);
         updateScreen();
         return;
     }
+    if(split(input)){
+        if(split(queue[queue.length-1])){
+            queue.pop();
+            queue.push(input);
+        }else{
+            queue.push(input);
+        }
+        updateScreen();
+        return;
+    }
     if(input=='='){
+        if(split(queue[queue.length-1])){
+            return;
+        }
         cleanAll(queue);
         console.log('cleaned: '+cleaned);
         calculateAll(cleaned);
@@ -91,10 +111,18 @@ function cleanAll(array){
                 cleaned.push(temp2);
                 cleaned.push(array[i]);
             }else{
+                if(array.length==1){
+                    if(array[0]=='.'){
+                        cleaned.push(0)
+                        cleaned.push(array[0]);
+                        return;
+                    }
+                    cleaned[0] = array[0];
+                    return;
+                }
                 temp2 = temp2+array[i];
                 cleaned.push(temp2);
             }
-
             return;
         }else{
             if(split(array[i])){
@@ -119,11 +147,11 @@ function calculateAll(array){
     x = array.length;
     for(i=0;i<x;i++){
         if(array.length<=3){
-            result=calculate(parseInt(array[0]),array[1],parseInt(array[2]));
+            result=calculate(parseFloat(array[0]),array[1],parseFloat(array[2]));
             return;
         }
         if(i%2==1){
-            result=calculate(parseInt(array[0]),array[1],parseInt(array[2]));
+            result=calculate(parseFloat(array[0]),array[1],parseFloat(array[2]));
             array.shift();
             array.shift();
             array.shift();
