@@ -1,14 +1,10 @@
-*{
-box-sizing: border-box;
-}
-
 body{
     height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     align-items:center;
-    background-color: dark gray;
+    background-color: rgb(240, 156, 0);
     margin:0px;
 }
 
@@ -19,15 +15,26 @@ body{
     height: 350px;
 }
 
+marquee{
+    truespeed: 100;
+}
+
 .mid{
-    height: 400px;
-    width: 300px;
+    padding: 8px;
+    align-content: center;
+    height: 460px;
+    width: 315px;
+    outline: 10px ridge gray;
+    border-radius: 2rem;
+    background-color: rgb(73, 73, 73);
+    box-shadow: 12px 12px 12px rgb(0 0 0 / 50%);
 }
 
 .calcBody{
-    height:100%;
-    width:100%;
-    margin: 0px;
+    height:95%;
+    width:95%;
+    margin: auto auto;
+    margin-top: 10px;
 }
 
 .buttonRow{
@@ -41,21 +48,54 @@ body{
 }
 
 .calcButton{
+height: 70px;
+width: 66px;
 padding:20px;
 margin:0 0.3em 0.3em 0;
-border-radius:2em;
+border-radius:5px;
 text-decoration:none;
 font-family:'Roboto',sans-serif;
 font-weight:300;
 color:#FFFFFF;
-background-color:#4eb5f1;
+background-color:gray;
 text-align:center;
 transition: all 0.2s;
 flex-grow: 1;
 }
 
 .calcButton:hover{
-background-color:#4095c6;
+background-color:lightgray;
+color:black;
+transform: translateY(-0.2rem);
+}
+
+.del{
+    background-color: rgb(240, 156, 0);
+}
+
+.del:hover{
+    background-color: rgb(250, 160, 10);
+}
+
+.beans{
+    background-image: url(./beans.jpg);
+    background-size: 100%;
+}
+
+.equal{
+    background-color: darkgreen;
+}
+
+.equal:hover{
+    background-color: rgb(61, 163, 61);
+}
+
+.operator{
+    background-color: darkblue;
+}
+
+.operator:hover{
+    background-color: rgb(93, 93, 255);
 }
 
 @media all and (max-width:30em){
@@ -72,16 +112,18 @@ background-color:#4095c6;
 
 .screen{
     display: flex;
-    /* align-items:center; */
     width: auto;
     height: 45px;
     justify-content: right;
     padding: 2px;
     border: 2px solid black;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    background-color: lightgray;
 }
 
 #screenText{
     font-size: 50px;
-    font-weight: bold;
     font-family: 'digital-clock-font';
+    overflow: hidden;
 }

@@ -1,32 +1,21 @@
-const button1 = document.getElementById("1");
-const button2 = document.getElementById("2");
-const button3 = document.getElementById("3");
-const button4 = document.getElementById("4");
-const button5 = document.getElementById("5");
-const button6 = document.getElementById("6");
-const button7 = document.getElementById("7");
-const button8 = document.getElementById("8");
-const button9 = document.getElementById("9");
-const button0 = document.getElementById("0");
-const buttonEqual = document.getElementById("=");
-const buttonDivide = document.getElementById("/");
 const buttonAC = document.getElementById("AC");
-const buttonMult = document.getElementById("*");
-const buttonPlus = document.getElementById("+");
-const buttonDot = document.getElementById(".");
 const buttonC = document.getElementById("C");
 const buttonDEL = document.getElementById("DEL");
-const screen = document.getElementById("screen");
 const screenText = document.getElementById("screenText");
 const buttons = document.querySelectorAll('.calcButton');
-
+const buttonBeans = document.getElementById("BEANS");
+let all = document.getElementsByTagName('*');
 let queue = [];
 let temp = '';
 let resultBuilder = []
 let cleaned = new Array;
 let result = 0;
 let current=0;
+function rand(max){
+    return Math.floor(Math.random()*max);
+}
 
+//EventListeners
 buttons.forEach(e => {e. onclick = () => addToQueue(e.textContent);});
 
 buttonAC.onclick = ()=> {
@@ -34,11 +23,38 @@ buttonAC.onclick = ()=> {
     screenText.textContent='0';
 }
 
+all = Array.from(all).slice(8,40);
+
+
+//Remove regular functions from special buttons
+buttonBeans.removeAttribute("onclick");
 buttonC.removeAttribute("onclick");
 buttonDEL.removeAttribute("onclick");
 buttonC.onclick = ()=>{clearLastInput();}
 buttonDEL.onclick = ()=>{del();}
+buttonBeans.onclick = ()=>{
+    console.log(all);
+    //location.href='https://www.heinz.com.au/beanz/products/00000006';
+    Array.from(all).forEach(e => {
+        let x = rand(2);
+        console.log(x);
+        // e.outerHTML = `<marquee>${e.outerHTML} </marquee>`
+        let marq = document.createElement('marquee');
+        if(x==0){
+            marq.direction = 'up';
+            marq.behavior = 'alternate'
 
+        }
+        marq.scrollAmount=10;
+        console.log(e);
+        e.parentNode.insertBefore(marq,e);
+        marq.appendChild(e);
+
+
+    });
+}
+
+//Delete only the last input i.e. 894 becomes 89
 function del(){
     if(queue.length==0){
         screenText.textContent = '0';
@@ -48,6 +64,7 @@ function del(){
     updateScreen();
 }
 
+//Delete the entire last entry i.e. 894 becomes 0
 function clearLastInput(){
     if(queue.length<2){
         clear();
@@ -60,18 +77,18 @@ function clearLastInput(){
     }
 }
 
+//Clear all
 function clear(){
-    temp = queue[0];
     queue = [];
-    temp = '';
     resultBuilder = [];
     result = 0;
     current=0;
     cleaned = [];
 }
 
+//Adds the input to the current queue
 function addToQueue(input){
-    //Gets the last result if the first input is an operator
+    //Gets the previous result if the first input is an operator
     x = parseFloat(screenText.textContent);
     if(split(input)&&queue.length==0){
         queue.push(x);
@@ -95,7 +112,6 @@ function addToQueue(input){
     //Calculate
     if(input=='='){
         cleanAll(queue);
-        //console.log('cleaned: '+cleaned);
         if(cleaned.length==1){
             return;
         }
@@ -103,12 +119,10 @@ function addToQueue(input){
             return;
         }
         calculateAll(cleaned);
-        //console.log('result = '+result);
         screenText.textContent = parseFloat(result.toFixed(2));
         clear();
     }else{
         queue.push(input);
-        //console.log(queue);
         if(x=='0'){
             current='';
         }
@@ -118,10 +132,7 @@ function addToQueue(input){
 
 //Cleans the current queue into a readable string and displays it
 function updateScreen(){
-    // console.log("queue is : "+queue);
     cleanAll(queue);
-    // console.log("cleaned is : "+cleaned);
-    // queue=cleaned;
     let str = cleaned.join(' ');
     if(str.length==0){
         screenText.textContent = 0;
