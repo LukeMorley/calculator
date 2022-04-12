@@ -14,6 +14,8 @@ const buttonAC = document.getElementById("AC");
 const buttonMult = document.getElementById("*");
 const buttonPlus = document.getElementById("+");
 const buttonDot = document.getElementById(".");
+const buttonC = document.getElementById("C");
+const buttonDEL = document.getElementById("DEL");
 const screen = document.getElementById("screen");
 const screenText = document.getElementById("screenText");
 const buttons = document.querySelectorAll('.calcButton');
@@ -25,23 +27,42 @@ let cleaned = new Array;
 let result = 0;
 let current=0;
 
-buttons.forEach(e => {
-    e. onclick = () => addToQueue(e.textContent);
-});
+buttons.forEach(e => {e. onclick = () => addToQueue(e.textContent);});
 
 buttonAC.onclick = ()=> {
     clear();
     screenText.textContent='0';
 }
 
-function clearLastInput(){
+buttonC.removeAttribute("onclick");
+buttonDEL.removeAttribute("onclick");
+buttonC.onclick = ()=>{clearLastInput();}
+buttonDEL.onclick = ()=>{del();}
 
+function del(){
+    if(queue.length==0){
+        screenText.textContent = '0';
+        return;
+    }
+    queue.pop();
+    updateScreen();
+}
+
+function clearLastInput(){
+    if(queue.length<2){
+        clear();
+        updateScreen();
+        screenText.textContent='0';
+    }else{
+        cleaned.pop();
+        queue = cleaned;
+        updateScreen();
+    }
 }
 
 function clear(){
     temp = queue[0];
     queue = [];
-    //queue.push(temp);
     temp = '';
     resultBuilder = [];
     result = 0;
@@ -50,6 +71,7 @@ function clear(){
 }
 
 function addToQueue(input){
+    //Gets the last result if the first input is an operator
     x = parseFloat(screenText.textContent);
     if(split(input)&&queue.length==0){
         queue.push(x);
@@ -57,6 +79,9 @@ function addToQueue(input){
         updateScreen();
         return;
     }
+    //Checks if the current input & last input were both operators, to avoid
+    //multiple operators in a row (i.e. 33,X,/,+,22). If true replace last
+    //operator with current input 
     if(split(input)){
         if(split(queue[queue.length-1])){
             queue.pop();
@@ -67,19 +92,23 @@ function addToQueue(input){
         updateScreen();
         return;
     }
+    //Calculate
     if(input=='='){
-        if(split(queue[queue.length-1])){
+        cleanAll(queue);
+        //console.log('cleaned: '+cleaned);
+        if(cleaned.length==1){
             return;
         }
-        cleanAll(queue);
-        console.log('cleaned: '+cleaned);
+        if(split(cleaned[cleaned.length-1])){
+            return;
+        }
         calculateAll(cleaned);
-        console.log('result = '+result);
+        //console.log('result = '+result);
         screenText.textContent = parseFloat(result.toFixed(2));
         clear();
     }else{
         queue.push(input);
-        console.log(queue);
+        //console.log(queue);
         if(x=='0'){
             current='';
         }
@@ -87,14 +116,21 @@ function addToQueue(input){
     }
 }
 
+//Cleans the current queue into a readable string and displays it
 function updateScreen(){
-    console.log("queue is : "+queue);
+    // console.log("queue is : "+queue);
     cleanAll(queue);
+    // console.log("cleaned is : "+cleaned);
+    // queue=cleaned;
     let str = cleaned.join(' ');
-    cleaned = [];
-    screenText.textContent = str;
+    if(str.length==0){
+        screenText.textContent = 0;
+    }else{
+        screenText.textContent = str;
+    }
 }
 
+//Checks if the current input is an operator
 function split(input){
     if(input=='-'||input=='/'||input=='+'||input=='X'){
         return true;
@@ -103,7 +139,14 @@ function split(input){
     }
 }
 
+//sanitises the input array so that numbers are grouped
+//i.e. transforms [3,0,.,2,+,1,2] into [30.2,+,12]
 function cleanAll(array){
+    cleaned = [];
+    if(array.length==1){
+        cleaned.push(array[0]);
+        return;
+    }
     let temp2 ='';
     for(i=0;i<array.length;i++){
         if(i==array.length-1){
@@ -136,6 +179,7 @@ function cleanAll(array){
     }
 }
 
+//Given a number, an operator and another number returns the result
 function calculate(int,string,int2){
     if(string=='/'){return int/int2};
     if(string=='+'){return int+int2};
@@ -143,10 +187,17 @@ function calculate(int,string,int2){
     if(string=='X'){return int*int2};
 }
 
+//Calculates from left to right using the above calculate function.
+//Replaces the first 3 items in queue with the result and repeats
+//until the queue is empty
 function calculateAll(array){
     x = array.length;
     for(i=0;i<x;i++){
-        if(array.length<=3){
+        if(array.length<3){
+            result=array[0];
+            return
+        }
+        if(array.length==3){
             result=calculate(parseFloat(array[0]),array[1],parseFloat(array[2]));
             return;
         }
